@@ -98,6 +98,9 @@ class Chmg_Paybright_Checkout_Public {
 
 		global $woocommerce;
 
+		$amount =  preg_replace( '#[^\d.]#', '', $woocommerce->cart->get_cart_total() ) ;
+		$amount = substr($amount, 2);
+
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/chmg-paybright-checkout-public.js', array( 'jquery' ), time(), false );
 		#wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/chmg-paybright-checkout-public.js', array( 'jquery' ), $this->version, false );
@@ -109,7 +112,7 @@ class Chmg_Paybright_Checkout_Public {
 									'chmg_pb_additional_note_el' => get_option('chmg_pb_additional_note_el'),
 									'chmg_pb_interest_rate_el' 	 => get_option('chmg_pb_interest_rate_el'),
 									'chmg_pb_currency_symbol' 	 => get_woocommerce_currency_symbol(),
-									'chmg_pb_cart_total' 	 	 => $woocommerce->cart->total,
+									'chmg_pb_cart_total' 	 	 => $amount,
 
 								]
 		);
@@ -131,7 +134,7 @@ class Chmg_Paybright_Checkout_Public {
 		$percentage_increase = $interest_rate_float * $amount;
 
 		//Check if the gateway is PayBright
-		if ( $chosen_gateway != 'paybright' ) {
+		if ( $chosen_gateway == 'paybright' ) {
 			WC()->cart->add_fee( __( get_option('chmg_pb_fee_title_el')), $percentage_increase);
 		}
 	}

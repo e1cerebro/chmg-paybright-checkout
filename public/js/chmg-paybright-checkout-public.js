@@ -4,7 +4,7 @@ jQuery(document).on('change', 'input[type=radio][name=payment_method]', function
     var payment_method = this.value;
 
     //check if it is payBright
-    if ('paybright' !== payment_method) {
+    if ('paybright' === payment_method) {
         chmg_pb_add_note()
     } else {
         chmg_pb_remove_note();
@@ -21,8 +21,10 @@ jQuery(document).ready(function() {
     //Get the payment method
     var payment_method = jQuery('input[type=radio][name=payment_method]').value;
 
+    // chmg_pb_remove_note();
+
     //check if it is payBright
-    if ('paybright' !== payment_method) {
+    if ('paybright' === payment_method) {
         chmg_pb_add_note();
     } else {
         chmg_pb_remove_note();
@@ -46,6 +48,11 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.split(search).join(replacement);
 };
 
+function roundUp(num, precision) {
+    precision = Math.pow(10, precision)
+    return Math.ceil(num * precision) / precision
+}
+
 function chmg_pb_additional_fee() {
     //Get the current order total before you started processing the data
     var cart_total_amt = parseFloat(chmg_pb_checkout_vars.chmg_pb_cart_total);
@@ -60,7 +67,7 @@ function chmg_pb_additional_fee() {
 
     var chmg_pb_currency_symbol = ' ' + chmg_pb_checkout_vars.chmg_pb_currency_symbol;
 
-    additional_note = additional_note.replaceAll('[interest_fee]', '<strong>' + chmg_pb_currency_symbol + percentage_increase.toFixed(2) + '</strong>')
+    additional_note = additional_note.replaceAll('[interest_fee]', '<strong>' + chmg_pb_currency_symbol + roundUp(percentage_increase, 2) + '</strong>')
 
     return additional_note;
 }
