@@ -29,3 +29,9 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+
+//Delete Options:
+delete_option('chmg_pb_fee_title_el');
+delete_option('chmg_pb_interest_rate_el');
+delete_option('chmg_pb_additional_note_el');

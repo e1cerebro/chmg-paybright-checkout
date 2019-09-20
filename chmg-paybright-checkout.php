@@ -97,3 +97,11 @@ function run_chmg_paybright_checkout() {
 
 }
 run_chmg_paybright_checkout();
+
+
+add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), function($links){
+	$links[] = '<a href="' .
+		admin_url( 'admin.php?page=chmg-paybright-checkout' ) .
+		'">' . __('Settings', 'chmg_pb') . '</a>';
+	return $links;
+} );
