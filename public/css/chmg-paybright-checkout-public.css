@@ -1,0 +1,20 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+p.chmg_pb-paybright-note {
+    border-bottom: 3px solid #eaeaea;
+    padding-bottom: 11px;
+}
+
+span.note-title {
+    color: red;
+}
+
+
+/* p.chmg_pb-paybright-note::before {
+    content: "\2139";
+    color: red;
+    margin-right: 3px;
+} */
