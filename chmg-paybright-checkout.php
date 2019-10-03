@@ -16,7 +16,7 @@
  * Plugin Name:       CHMG Paybright Checkout
  * Plugin URI:        #
  * Description:       This plugin is designed to display additional interest rate for customers checking out with PayBright gateway
- * Version:           1.0.0
+ * Version:           2.0.0
  * Author:            Canadian Home Medical Group
  * Author URI:        #
  * License:           GPL-2.0+

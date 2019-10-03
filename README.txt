@@ -66,6 +66,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+= 2.0 =
+* Added the option to choose the interest rate calculation method.
+* Adjusted message to display after page load if paybright payment is pre-selected.
 
 = 1.0 =
 * A change since the previous version.

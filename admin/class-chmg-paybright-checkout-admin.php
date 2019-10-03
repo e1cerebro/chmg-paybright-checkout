@@ -146,10 +146,23 @@ class Chmg_Paybright_Checkout_Admin {
 		 register_setting( $this->plugin_name, 'chmg_pb_fee_title_el', 'chmg_pb_sanitize_fee_title');
 
 
+		/* Calculation Method Type */
+		add_settings_field(
+			'chmg_pb_calculation_method_el',
+			__( 'Calculation Method', 'chmg_pb'),
+			[ $this,'chmg_pb_calculation_method_cb'],
+			$this->plugin_name,
+			'chmg_pb_general_section'
+		 );
+
+
+		 //Register the settings in the DB
+		 register_setting( $this->plugin_name, 'chmg_pb_calculation_method_el', 'chmg_pb_sanitize_fee_title');
+
 		/*Interest Rate */
 		add_settings_field(
 			'chmg_pb_interest_rate_el',
-			__( 'Interest Rate', 'chmg_pb'),
+			__( 'Interest Rate/Amount', 'chmg_pb'),
 			[ $this,'chmg_pb_interest_rate_cb'],
 			$this->plugin_name,
 			'chmg_pb_general_section'
@@ -204,6 +217,26 @@ class Chmg_Paybright_Checkout_Admin {
 		 	<input class="regular-text" type="text" name="<?php echo esc_attr('chmg_pb_interest_rate_el'); ?>" value="<?php echo esc_attr($chmg_pb_interest_rate); ?>" >
 		</div>
 		<p class="description"><?php _e("Enter the interest rate you are willing to charge", 'chmg_bp'); ?></p>
+
+		<?php
+	}
+
+	/* Display the input for the interest settings */
+	public function chmg_pb_calculation_method_cb(){
+		$chmg_pb_calculation_method =  get_option('chmg_pb_calculation_method_el');
+
+		/* the two interest rate types we accept */
+		define( 'FIXED_AMOUNT_RATE', 'fixed amount rate' );
+		define( 'PERCENTAGE_RATE', 'percentage_rate' );
+
+		?>
+
+		<div class="chmg_bp-input">
+				<fieldset>
+ 					<label><input type="radio" name="<?php echo esc_attr('chmg_pb_calculation_method_el'); ?>" value="<?php echo esc_attr(FIXED_AMOUNT_RATE); ?>" <?php  echo (FIXED_AMOUNT_RATE == $chmg_pb_calculation_method) ?  'checked': '' ; ?> > <span class="date-time-text format-i18n">Fixed Amount Rate</span></label><br>
+ 					<label><input type="radio" name="<?php echo esc_attr('chmg_pb_calculation_method_el'); ?>" value="<?php echo esc_attr(PERCENTAGE_RATE); ?>" <?php echo (PERCENTAGE_RATE == $chmg_pb_calculation_method) ?  'checked': '' ; ?>> <span class="date-time-text format-i18n">Percentage Rate</span> </label><br>
+				</fieldset>
+		</div>
 
 		<?php
 	}

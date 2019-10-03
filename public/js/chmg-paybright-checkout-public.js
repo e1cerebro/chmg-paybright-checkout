@@ -19,12 +19,10 @@ jQuery(document).on('change', 'input[type=radio][name=payment_method]', function
 //Handle the payment method on page load.
 jQuery(document).ready(function() {
     //Get the payment method
-    var payment_method = jQuery('input[type=radio][name=payment_method]').value;
-
-    // chmg_pb_remove_note();
+    var payment_method = jQuery('input[type=radio][name=payment_method]:checked').val();
 
     //check if it is payBright
-    if ('paybright' === payment_method) {
+    if ('paybright' == payment_method) {
         chmg_pb_add_note();
     } else {
         chmg_pb_remove_note();
@@ -57,11 +55,19 @@ function chmg_pb_additional_fee() {
     //Get the current order total before you started processing the data
     var cart_total_amt = parseFloat(chmg_pb_checkout_vars.chmg_pb_cart_total);
 
+    var calculation_method = chmg_pb_checkout_vars.chmg_calculation_method;
+
     //get the paybright interest rate
     var interest_rate = parseFloat(chmg_pb_checkout_vars.chmg_pb_interest_rate_el);
 
-    //Calculate the interest increase
-    var percentage_increase = parseFloat((interest_rate / 100) * cart_total_amt);
+    //Determine the calculation method to use
+    if ('percentage_rate' == calculation_method) {
+        //Calculate the interest increase
+        var percentage_increase = parseFloat((interest_rate / 100) * cart_total_amt);
+    } else {
+        //Calculate the interest increase
+        var percentage_increase = parseFloat(interest_rate);
+    }
 
     var additional_note = chmg_pb_checkout_vars.chmg_pb_additional_note_el;
 

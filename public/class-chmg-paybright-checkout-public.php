@@ -108,6 +108,7 @@ class Chmg_Paybright_Checkout_Public {
 							'chmg_pb_checkout_vars',
 								[
 									'ajax_url' 				     => admin_url('admin-ajax.php'),
+									'chmg_calculation_method'	 => get_option('chmg_pb_calculation_method_el'),
 									'chmg_pb_fee_title_el' 		 => get_option('chmg_pb_fee_title_el'),
 									'chmg_pb_additional_note_el' => get_option('chmg_pb_additional_note_el'),
 									'chmg_pb_interest_rate_el' 	 => get_option('chmg_pb_interest_rate_el'),
@@ -124,14 +125,21 @@ class Chmg_Paybright_Checkout_Public {
 
 		$amount =  preg_replace( '#[^\d.]#', '', $woocommerce->cart->get_cart_total() ) ;
 		$amount = substr($amount, 2);
+
+		$calculation_method = get_option('chmg_pb_calculation_method_el');
 	
+		$interest_rate		 = get_option('chmg_pb_interest_rate_el');
+		
 		//Get the chosen gateway
 		$chosen_gateway 	 = WC()->session->get( 'chosen_payment_method' );
 
-		//Calculate the interest fee
-		$interest_rate		 = get_option('chmg_pb_interest_rate_el');
-		$interest_rate_float = (float)($interest_rate / 100);
-		$percentage_increase = $interest_rate_float * $amount;
+		if('percentage_rate' == $calculation_method ){
+			$interest_rate_float = (float)($interest_rate / 100);
+			$percentage_increase = $interest_rate_float * $amount;
+		}else{
+			 
+			$percentage_increase = $interest_rate;
+		}
 
 		//Check if the gateway is PayBright
 		if ( $chosen_gateway == 'paybright' ) {
