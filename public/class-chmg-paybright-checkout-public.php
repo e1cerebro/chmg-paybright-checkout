@@ -48,10 +48,8 @@ class Chmg_Paybright_Checkout_Public {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -60,7 +58,6 @@ class Chmg_Paybright_Checkout_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -74,7 +71,6 @@ class Chmg_Paybright_Checkout_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/chmg-paybright-checkout-public.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -96,55 +92,77 @@ class Chmg_Paybright_Checkout_Public {
 		 * class.
 		 */
 
+		// Get the global $woocommerce object.
 		global $woocommerce;
 
-		$amount =  preg_replace( '#[^\d.]#', '', $woocommerce->cart->get_cart_total() ) ;
+		// Get the cart total from the $woocommerce object.
+		$cart_total = $woocommerce->cart->get_cart_total();
+
+		// Remove all non-numeric and non-decimal characters from the cart total.
+		$amount = preg_replace('/[^\d.]/', '', $cart_total);
+
+		// Remove the first two characters from the amount.
 		$amount = substr($amount, 2);
 
+		// Enqueue a JavaScript file called "chmg-paybright-checkout-public.js".
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/chmg-paybright-checkout-public.js', array('jquery'), time(), false);
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/chmg-paybright-checkout-public.js', array( 'jquery' ), time(), false );
-		#wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/chmg-paybright-checkout-public.js', array( 'jquery' ), $this->version, false );
-		wp_localize_script( $this->plugin_name, 
-							'chmg_pb_checkout_vars',
-								[
-									'ajax_url' 				     => admin_url('admin-ajax.php'),
-									'chmg_calculation_method'	 => get_option('chmg_pb_calculation_method_el'),
-									'chmg_pb_fee_title_el' 		 => get_option('chmg_pb_fee_title_el'),
-									'chmg_pb_additional_note_el' => get_option('chmg_pb_additional_note_el'),
-									'chmg_pb_interest_rate_el' 	 => get_option('chmg_pb_interest_rate_el'),
-									'chmg_pb_currency_symbol' 	 => get_woocommerce_currency_symbol(),
-									'chmg_pb_cart_total' 	 	 => $amount,
-
-								]
+		// Define an array of variables to be passed to the JavaScript file.
+		$localized_vars = array(
+		// The URL for the AJAX processing file.
+		'ajax_url' => admin_url('admin-ajax.php'),
+		// The calculation method specified in the plugin settings.
+		'chmg_calculation_method' => esc_attr(get_option('chmg_pb_calculation_method_el')),
+		// The fee title specified in the plugin settings.
+		'chmg_pb_fee_title_el' => esc_attr(get_option('chmg_pb_fee_title_el')),
+		// The additional note specified in the plugin settings.
+		'chmg_pb_additional_note_el' => esc_attr(get_option('chmg_pb_additional_note_el')),
+		// The interest rate specified in the plugin settings.
+		'chmg_pb_interest_rate_el' => esc_attr(get_option('chmg_pb_interest_rate_el')),
+		// The currency symbol for the current currency.
+		'chmg_pb_currency_symbol' => get_woocommerce_currency_symbol(),
+		// The cart total amount.
+		'chmg_pb_cart_total' => $amount,
 		);
+
+		// Pass the array of variables to the JavaScript file.
+		wp_localize_script($this->plugin_name, 'chmg_pb_checkout_vars', $localized_vars);
+
 	}
 
+	/**
+	 * This function adds a checkout fee for the PayBright gateway
+	 * 
+	 * @since 1.0.0
+	 * @access public
+	 * 
+	 * @return void
+	 */
 	public function chmg_pb_add_checkout_fee_for_gateway(){
 
 		global $woocommerce;  
 
-		$amount =  preg_replace( '#[^\d.]#', '', $woocommerce->cart->get_cart_total() ) ;
-		$amount = substr($amount, 2);
+		// Remove all non-numeric characters and get the total cart amount
+		$amount =  preg_replace( '#[^\d.]#', '', $woocommerce->cart->get_cart_total() );
+		$amount = substr($amount, 2); // remove the currency symbol
 
-		$calculation_method = get_option('chmg_pb_calculation_method_el');
-	
-		$interest_rate		 = get_option('chmg_pb_interest_rate_el');
-		
-		//Get the chosen gateway
+		$calculation_method = esc_attr(get_option('chmg_pb_calculation_method_el'));
+		$interest_rate = esc_attr(get_option('chmg_pb_interest_rate_el'));
+
+		// Get the chosen payment gateway
 		$chosen_gateway 	 = WC()->session->get( 'chosen_payment_method' );
 
+		// Calculate the fee based on the chosen calculation method
 		if('percentage_rate' == $calculation_method ){
 			$interest_rate_float = (float)($interest_rate / 100);
 			$percentage_increase = $interest_rate_float * $amount;
-		}else{
-			 
+		} else {
 			$percentage_increase = $interest_rate;
 		}
 
-		//Check if the gateway is PayBright
+		// Check if the chosen gateway is PayBright
 		if ( $chosen_gateway == 'paybright' ) {
-			WC()->cart->add_fee( __( get_option('chmg_pb_fee_title_el')), $percentage_increase);
+			WC()->cart->add_fee( __( esc_attr(get_option('chmg_pb_fee_title_el'))), $percentage_increase);
 		}
 	}
-
 }

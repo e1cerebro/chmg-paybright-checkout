@@ -42,7 +42,7 @@ if ( !is_plugin_active( 'paybright/PayBright.php' ) ) {
 	//plugin is activated
 	?>
 	<div class="notice notice-error">
-		<p><?php _e( 'Please install PayBright plugin before installing this plugin!', 'chmg_pb' ); ?></p>
+		<p><?php _e( 'Please install PayBright plugin before installing this plugin!', 'chmg-paybright-checkout' ); ?></p>
 	</div>
 	<?php
  } 
@@ -102,6 +102,6 @@ run_chmg_paybright_checkout();
 add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), function($links){
 	$links[] = '<a href="' .
 		admin_url( 'admin.php?page=chmg-paybright-checkout' ) .
-		'">' . __('Settings', 'chmg_pb') . '</a>';
+		'">' . __('Settings', 'chmg-paybright-checkout') . '</a>';
 	return $links;
 } );
